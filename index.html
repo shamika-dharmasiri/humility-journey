@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Humility Journey</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0f0e0c;color:#e8e0d4;font-family:Georgia,'Palatino Linotype',serif;min-height:100vh;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  button{cursor:pointer;font-family:Georgia,serif}
+
+  /* NAV */
+  nav{display:flex;align-items:center;justify-content:space-between;padding:20px 32px;border-bottom:1px solid #2a2825;position:sticky;top:0;background:#0f0e0c;z-index:100}
+  .logo{font-size:14px;letter-spacing:.2em;text-transform:uppercase;color:#c4a96b}
+  .nav-links{display:flex;gap:20px}
+  .nav-btn{background:none;border:none;color:#9a8f80;font-size:12px;letter-spacing:.1em;text-transform:uppercase;transition:color .2s;padding:4px}
+  .nav-btn:hover{color:#c4a96b}
+
+  /* SCREENS */
+  .screen{display:none}.screen.active{display:block}
+  .container{max-width:760px;margin:0 auto;padding:60px 24px}
+
+  /* HERO */
+  .hero{text-align:center;padding:80px 24px 60px}
+  .eyebrow{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#c4a96b;margin-bottom:20px}
+  h1.hero-title{font-size:clamp(36px,6vw,64px);font-weight:400;line-height:1.15;color:#f0e8dc;margin-bottom:24px;font-style:italic}
+  .hero-sub{font-size:17px;color:#8a7f72;line-height:1.7;max-width:520px;margin:0 auto 48px}
+  blockquote{border-left:2px solid #c4a96b;padding-left:24px;margin:48px auto;max-width:520px;text-align:left;color:#a89880;font-style:italic;font-size:15px;line-height:1.7}
+  blockquote cite{font-size:12px;color:#5a5048;font-style:normal}
+
+  /* CARDS */
+  .card-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:640px;margin:0 auto}
+  .card{background:#1a1916;border:1px solid #2d2b28;border-radius:4px;padding:32px 28px;cursor:pointer;transition:border-color .25s,transform .25s;text-align:left}
+  .card:hover{border-color:#c4a96b;transform:translateY(-2px)}
+  .card-icon{font-size:28px;margin-bottom:16px}
+  .card-title{font-size:16px;color:#e0d8cc;margin-bottom:8px;font-weight:600}
+  .card-desc{font-size:13px;color:#6e6560;line-height:1.6}
+  .card-score{margin-top:16px;font-size:13px;color:#c4a96b}
+
+  /* BUTTONS */
+  .btn-primary{background:#c4a96b;color:#0f0e0c;border:none;padding:14px 36px;font-size:13px;letter-spacing:.15em;text-transform:uppercase;border-radius:2px;transition:background .2s}
+  .btn-primary:hover{background:#d4b97b}
+  .btn-ghost{background:none;color:#c4a96b;border:1px solid #3d3830;padding:12px 28px;font-size:13px;letter-spacing:.12em;text-transform:uppercase;border-radius:2px;transition:border-color .2s}
+  .btn-ghost:hover{border-color:#c4a96b}
+  .btn-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+
+  /* SECTION HEADER */
+  .section-header{margin-bottom:40px}
+  h2.section-title{font-size:28px;font-weight:400;color:#f0e8dc;margin-bottom:8px;font-style:italic}
+  .section-sub{font-size:14px;color:#7a6e64;line-height:1.6}
+
+  /* PROGRESS BAR */
+  .progress-bar{background:#2a2825;height:4px;border-radius:2px;margin-bottom:40px;overflow:hidden}
+  .progress-fill{height:100%;background:#c4a96b;border-radius:2px;transition:width .5s ease;width:0%}
+
+  /* QUIZ */
+  .question{background:#1a1916;border:1px solid #2d2b28;border-radius:4px;padding:28px;margin-bottom:16px}
+  .q-category{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#c4a96b;margin-bottom:10px}
+  .q-text{font-size:16px;color:#ddd5c8;line-height:1.6;margin-bottom:20px}
+  .scale-row{display:flex;align-items:center;gap:10px}
+  .scale-label{font-size:11px;color:#5a5048;flex:0 0 auto}
+  .scale-btns{display:flex;gap:6px;flex:1;justify-content:center}
+  .scale-btn{width:38px;height:38px;border-radius:50%;border:1px solid #3d3830;background:transparent;color:#7a6e64;font-size:13px;transition:all .15s;font-family:Georgia,serif}
+  .scale-btn:hover{border-color:#c4a96b;color:#c4a96b}
+  .scale-btn.active{background:#c4a96b;border-color:#c4a96b;color:#0f0e0c}
+  .quiz-footer{text-align:center;margin-top:40px}
+  .quiz-hint{font-size:13px;color:#5a5048;margin-top:12px}
+
+  /* RESULTS */
+  .results-card{background:#1a1916;border:1px solid #2d2b28;border-radius:4px;padding:40px;text-align:center;margin-bottom:32px}
+  .score-num{font-size:80px;font-weight:300;line-height:1;margin-bottom:4px;font-style:italic}
+  .score-max{font-size:18px;color:#5a5048;margin-bottom:20px}
+  .score-label{font-size:22px;margin-bottom:16px;letter-spacing:.05em}
+  .score-desc{font-size:15px;color:#8a7f72;line-height:1.7;max-width:480px;margin:0 auto}
+  .breakdown-card{background:#1a1916;border:1px solid #2d2b28;border-radius:4px;padding:32px;margin-bottom:32px}
+  .cat-row{margin-bottom:16px}
+  .cat-header{display:flex;justify-content:space-between;margin-bottom:6px}
+  .cat-name{font-size:13px;color:#a89880}
+  .cat-score{font-size:12px;color:#5a5048}
+  .cat-bar{background:#2a2825;height:3px;border-radius:2px}
+  .cat-fill{height:100%;border-radius:2px;transition:width .6s ease}
+
+  /* CHALLENGE */
+  .day-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:40px}
+  .day-cell{aspect-ratio:1;border-radius:3px;border:1px solid #2a2825;background:#15140f;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:#5a5048;transition:all .15s}
+  .day-cell:hover{border-color:#c4a96b;color:#c4a96b}
+  .day-list{margin-bottom:24px}
+  .day-item{background:#1a1916;border:1px solid #2d2b28;border-radius:4px;padding:20px 24px;margin-bottom:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:border-color .2s}
+  .day-item:hover{border-color:#c4a96b}
+  .day-item-num{font-size:11px;letter-spacing:.2em;color:#c4a96b;text-transform:uppercase;margin-bottom:4px}
+  .day-item-theme{font-size:17px;font-style:italic;color:#f0e8dc}
+  .day-item-preview{font-size:12px;color:#5a5048;margin-top:4px}
+  .arrow{color:#3d3830;font-size:18px}
+  #show-more-btn{width:100%;margin-top:8px}
+  #more-days{display:none}
+
+  /* JOURNAL */
+  .day-detail{background:#1a1916;border:1px solid #2d2b28;border-radius:4px;padding:40px;margin-bottom:24px}
+  .day-num{font-size:11px;letter-spacing:.3em;color:#c4a96b;text-transform:uppercase;margin-bottom:8px}
+  .day-theme{font-size:26px;font-style:italic;color:#f0e8dc;margin-bottom:24px}
+  .prompt-text{font-size:15px;color:#a89880;line-height:1.75;margin-bottom:24px}
+  .micro-label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#5a5048;margin-bottom:8px}
+  .micro-text{font-size:14px;color:#7a6e64;font-style:italic;line-height:1.6;padding:16px;background:#141310;border-radius:3px;border-left:2px solid #2a2825}
+  .notepad-card{background:#141310;border:1px solid #2d2b28;border-radius:4px;padding:28px 32px;margin-bottom:24px}
+  .notepad-title{font-size:15px;color:#e0d8cc;margin-bottom:10px;font-weight:600}
+  .notepad-body{font-size:14px;color:#7a6e64;line-height:1.75;margin-bottom:20px}
+  .app-tags{display:flex;flex-wrap:wrap;gap:8px}
+  .app-tag{background:#1e1c18;border:1px solid #2d2b28;border-radius:3px;padding:6px 14px;font-size:12px;color:#a89880}
+  .day-nav{display:flex;justify-content:space-between;margin-top:40px}
+
+  /* FOOTER */
+  .footer{text-align:center;margin-top:64px;padding-top:48px;border-top:1px solid #1e1c18}
+  .footer p{font-size:12px;color:#3d3830;letter-spacing:.1em}
+
+  @media(max-width:520px){
+    .card-row{grid-template-columns:1fr}
+    nav{padding:16px 20px}
+    .container{padding:40px 16px}
+    .day-grid{grid-template-columns:repeat(5,1fr)}
+    .day-detail{padding:24px 20px}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="logo">Humility Journey</span>
+  <div class="nav-links" id="nav-links"></div>
+</nav>
+
+<!-- HOME -->
+<div id="screen-home" class="screen active">
+  <div class="hero">
+    <p class="eyebrow">A Personal Growth Companion</p>
+    <h1 class="hero-title">The Humility<br>Journey</h1>
+    <p class="hero-sub">Measure where you are. Then build the kind of person people remember — not for what they owned, but for how they made others feel.</p>
+    <blockquote>
+      "Humility and kindness will bring you more respect than a Ferrari ever will."<br>
+      <cite>— Morgan Housel, The Psychology of Money</cite>
+    </blockquote>
+  </div>
+  <div class="container" style="padding-top:0">
+    <div class="card-row">
+      <div class="card" onclick="showScreen('quiz')">
+        <div class="card-icon">🪞</div>
+        <div class="card-title">Humility Assessment</div>
+        <div class="card-desc">15 questions across 9 dimensions. Understand your baseline before you grow.</div>
+        <div class="card-score" id="home-score-tag" style="display:none"></div>
+      </div>
+      <div class="card" onclick="showScreen('challenge')">
+        <div class="card-icon">📓</div>
+        <div class="card-title">30-Day Challenge</div>
+        <div class="card-desc">Daily prompts and micro-practices — journal your reflections in your own notepad.</div>
+      </div>
+    </div>
+    <div class="footer"><p>Free & open source. No accounts, no tracking, no data collected.</p></div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="screen-quiz" class="screen">
+  <div class="container">
+    <div class="section-header">
+      <p class="eyebrow">Self-Assessment</p>
+      <h2 class="section-title">The Humility Quiz</h2>
+      <p class="section-sub">Rate each statement honestly. 1 = Strongly Disagree, 5 = Strongly Agree.</p>
+      <div class="progress-bar"><div class="progress-fill" id="quiz-progress"></div></div>
+    </div>
+    <div id="quiz-questions"></div>
+    <div class="quiz-footer">
+      <button class="btn-primary" id="submit-btn" onclick="submitQuiz()" style="opacity:.4;pointer-events:none">Reveal My Score</button>
+      <p class="quiz-hint" id="quiz-hint">Answer all 15 questions to continue</p>
+    </div>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="screen-results" class="screen">
+  <div class="container">
+    <p class="eyebrow" style="text-align:center">Your Results</p>
+    <div class="results-card">
+      <div class="score-num" id="res-score"></div>
+      <div class="score-max">/75</div>
+      <h3 class="score-label" id="res-label"></h3>
+      <p class="score-desc" id="res-desc"></p>
+    </div>
+    <div class="breakdown-card">
+      <p class="eyebrow" style="margin-bottom:20px">Score Breakdown by Category</p>
+      <div id="breakdown"></div>
+    </div>
+    <blockquote style="margin:32px auto">
+      "Humility is not thinking less of yourself, it's thinking of yourself less."<br>
+      <cite>— C.S. Lewis</cite>
+    </blockquote>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="showScreen('challenge')">Start 30-Day Challenge →</button>
+      <button class="btn-ghost" onclick="showScreen('home')">Back to Home</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHALLENGE -->
+<div id="screen-challenge" class="screen">
+  <div class="container">
+    <div class="section-header">
+      <p class="eyebrow">30-Day Challenge</p>
+      <h2 class="section-title">Your Daily Practice</h2>
+      <p class="section-sub">Click any day to open its prompt and journaling guidance.</p>
+    </div>
+    <div class="day-grid" id="day-grid"></div>
+    <div class="day-list" id="day-list-first"></div>
+    <button class="btn-ghost" id="show-more-btn" onclick="toggleMore()">Show All 30 Days</button>
+    <div id="more-days"><div class="day-list" id="day-list-rest" style="margin-top:12px"></div></div>
+  </div>
+</div>
+
+<!-- JOURNAL -->
+<div id="screen-journal" class="screen">
+  <div class="container">
+    <div class="day-detail" id="journal-detail"></div>
+    <div class="notepad-card">
+      <div style="font-size:28px;margin-bottom:16px">📓</div>
+      <p class="notepad-title">Write this in your favourite notepad</p>
+      <p class="notepad-body">Your reflections are most powerful when written honestly in a tool you trust. Open your preferred app, create an entry titled <em id="journal-entry-title"></em>, and write freely.</p>
+      <p class="micro-label" style="margin-bottom:10px">Great apps to journal in</p>
+      <div class="app-tags">
+        <span class="app-tag">Apple Notes</span>
+        <span class="app-tag">Notion</span>
+        <span class="app-tag">Obsidian</span>
+        <span class="app-tag">Day One</span>
+        <span class="app-tag">Google Docs</span>
+        <span class="app-tag">Pen & Paper</span>
+      </div>
+    </div>
+    <div class="day-nav" id="day-nav"></div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS=[
+  {id:1,text:"When I make a mistake, I find it easy to admit it to others.",cat:"Self-Awareness"},
+  {id:2,text:"I genuinely enjoy celebrating other people's successes.",cat:"Others-Focused"},
+  {id:3,text:"I often seek feedback even when it might be critical.",cat:"Growth"},
+  {id:4,text:"I can hold a conversation without steering it back to myself.",cat:"Presence"},
+  {id:5,text:"I acknowledge when someone else knows more than me.",cat:"Intellectual Humility"},
+  {id:6,text:"I don't need external validation to feel confident.",cat:"Self-Worth"},
+  {id:7,text:"I treat service workers and strangers with the same respect as authority figures.",cat:"Equality"},
+  {id:8,text:"I can accept being wrong without feeling personally attacked.",cat:"Resilience"},
+  {id:9,text:"I give credit to others rather than taking it for shared work.",cat:"Others-Focused"},
+  {id:10,text:"I can listen to someone fully without planning my response.",cat:"Presence"},
+  {id:11,text:"I recognize that my worldview is shaped by luck, timing, and circumstance.",cat:"Self-Awareness"},
+  {id:12,text:"I rarely feel the need to impress people with my achievements.",cat:"Self-Worth"},
+  {id:13,text:"I'm curious about ideas that challenge my existing beliefs.",cat:"Intellectual Humility"},
+  {id:14,text:"I can perform acts of kindness without needing recognition.",cat:"Kindness"},
+  {id:15,text:"I treat people differently based on what they can do for me.",cat:"Equality",rev:true},
+];
+
+const LEVELS=[
+  {min:0,max:30,label:"Room to Grow",color:"#e07b54",desc:"Humility is a muscle you haven't trained much yet — and that's okay. The fact that you're here means you're already ahead. The next 30 days will be transformative."},
+  {min:31,max:50,label:"Emerging Awareness",color:"#d4a843",desc:"You have genuine moments of humility, but ego patterns still run the show often. You're aware enough to catch yourself — now it's about building consistency."},
+  {min:51,max:65,label:"Grounded Presence",color:"#6aab8e",desc:"You practice humility in meaningful ways. You listen, you give credit, and you're open to growth. The deeper work now is in the subtle patterns you don't yet see."},
+  {min:66,max:75,label:"Quietly Powerful",color:"#4a90b8",desc:"Humility is a natural part of how you move through the world. People feel safe and seen around you. The 30-day challenge will sharpen and deepen what you already carry."},
+];
+
+const DAYS=[
+  {day:1,theme:"Silence & Listening",prompt:"Today, in every conversation, speak 30% less than usual. Focus entirely on understanding the other person. Journal: What did you notice when you truly listened?",micro:"Let someone else finish their thought completely before you respond."},
+  {day:2,theme:"Credit Giving",prompt:"Actively give credit to 3 people today for something they contributed to your life or work. Be specific. Journal: How did it feel to say it out loud?",micro:"Send one message thanking someone whose help you've never acknowledged."},
+  {day:3,theme:"The Admission",prompt:"Admit a mistake or a gap in your knowledge to someone today — don't soften it. Journal: What was your fear before admitting it? What happened after?",micro:"Say 'I was wrong about that' once today, without adding 'but'."},
+  {day:4,theme:"Beginner's Mind",prompt:"Approach one familiar task as if you've never done it before. Ask questions a beginner would ask. Journal: What did you discover by pretending not to know?",micro:"Ask someone to explain something you think you already understand."},
+  {day:5,theme:"Invisible Kindness",prompt:"Do one act of service or kindness today that no one will ever know you did. Journal: How did it feel to help without being seen?",micro:"Clean up something that isn't yours to clean up."},
+  {day:6,theme:"Equal Respect",prompt:"Pay conscious attention to how you treat every single person today — the cashier, the executive, the stranger. Journal: Did you notice any difference in how you showed up? Why?",micro:"Learn the name of one service worker you see regularly."},
+  {day:7,theme:"Week 1 Reflection",prompt:"Look back at the past 6 days. Journal: Where did humility come naturally? Where did ego sneak in? What pattern do you notice about yourself?",micro:"Write one thing you're genuinely proud of — without comparing it to anyone else."},
+  {day:8,theme:"Feedback Invitation",prompt:"Ask one trusted person: 'What's one blind spot you think I have?' Listen without defending. Journal: What did they say? How did it land?",micro:"Say 'thank you for telling me that' the next time someone gives you criticism."},
+  {day:9,theme:"Curiosity Over Opinion",prompt:"In every discussion today, lead with a question instead of your opinion. Journal: What did you learn that you wouldn't have if you had spoken first?",micro:"Before sharing a view, ask yourself: 'Do I actually need to share this?'"},
+  {day:10,theme:"The Luck Inventory",prompt:"List 10 things in your life that you didn't earn — things that came from luck, timing, who you were born to, or where. Journal: How does this shift your sense of personal achievement?",micro:"Acknowledge one privilege you benefit from but rarely think about."},
+  {day:11,theme:"No Complaints",prompt:"Go the entire day without complaining — not out loud, and not in your head. Journal: What triggers the urge to complain? What's underneath it?",micro:"Replace one complaint with a genuine observation or gratitude."},
+  {day:12,theme:"The Quiet Achievement",prompt:"Do your best work today without mentioning it to anyone. Don't post it, don't hint at it. Journal: How strong was the urge to share? What does that tell you?",micro:"Resist one opportunity to mention your own accomplishment."},
+  {day:13,theme:"Disagreement with Grace",prompt:"Find an opportunity to disagree with someone — and do it gently, with genuine curiosity. Journal: How did staying curious change the conversation?",micro:"Say 'that's an interesting perspective' and mean it."},
+  {day:14,theme:"Week 2 Reflection",prompt:"Review this week's entries. Journal: What is humility costing you right now? What is it giving you? Is the trade-off worth it?",micro:"Identify one relationship that would improve if you showed up with more humility."},
+  {day:15,theme:"Service Day",prompt:"Volunteer your time, help a neighbor, or support someone without being asked. Do it without expectation. Journal: How did serving others affect your sense of self?",micro:"Offer to help with one task someone finds difficult — without making them ask."},
+  {day:16,theme:"Undefended Listening",prompt:"Ask someone about their life experience that is very different from yours. Listen without redirecting to your own story. Journal: What surprised you about their world?",micro:"Ask one follow-up question before making any statement."},
+  {day:17,theme:"The Inner Critic Fast",prompt:"Today, avoid judging others in your thoughts. When a judgment arises, replace it with curiosity. Journal: How often did judgment arise? What was the feeling underneath it?",micro:"When you feel superior to someone, ask: what am I not seeing about them?"},
+  {day:18,theme:"Receiving Gracefully",prompt:"When someone compliments you today, simply say 'thank you' — no deflecting, no returning it immediately. Journal: Why is it hard to receive without deflecting?",micro:"Accept one compliment fully, without qualifying it."},
+  {day:19,theme:"The Apology",prompt:"Think of one person you owe an apology — big or small. Write the apology, whether or not you send it. Journal: What has holding it back cost you both?",micro:"Say sorry for something small today, cleanly and directly."},
+  {day:20,theme:"Slow Opinions",prompt:"Today, form no strong opinions until you've heard the full picture. Journal: When did you catch yourself jumping to conclusions? What did slowing down reveal?",micro:"Before a meeting or conversation, remind yourself: 'I might be missing something.'"},
+  {day:21,theme:"Week 3 Reflection",prompt:"Three weeks in. Journal: How has your relationship with your ego shifted? What do others seem to be experiencing around you now?",micro:"Ask someone close to you: 'Have you noticed any change in me lately?'"},
+  {day:22,theme:"Learning from Below",prompt:"Find wisdom today from someone younger, less experienced, or in a lower position. Journal: What did you learn from someone you might have dismissed before?",micro:"Ask a child or newcomer how they see something. Take their answer seriously."},
+  {day:23,theme:"The Comparison Detox",prompt:"Every time you compare yourself to someone today, redirect to: 'What can I learn from them?' Journal: What does comparison feel like in your body? What need does it try to fill?",micro:"Replace 'I wish I had what they have' with 'I wonder what their journey looked like.'"},
+  {day:24,theme:"The Full Presence",prompt:"In each conversation today, put your phone away completely. Journal: What did people reveal to you when they felt fully heard?",micro:"Make eye contact and don't glance away for the duration of one conversation."},
+  {day:25,theme:"Sharing the Stage",prompt:"Actively create space for quieter voices today — in meetings, in groups, in conversations. Journal: Whose voice emerged that you might have drowned out before?",micro:"Ask a quiet person in a group what they think, and make space for their answer."},
+  {day:26,theme:"The Open Hand",prompt:"Give something today — your time, your resources, your skills — without expecting a return. Journal: What is the difference between giving from abundance vs. giving from fear?",micro:"Offer something of value with no strings attached."},
+  {day:27,theme:"Releasing the Need to Win",prompt:"Find a moment today where being right matters less than being connected. Let it go. Journal: What did you 'lose' by not winning the argument? What did you gain?",micro:"In one disagreement, choose the relationship over the point."},
+  {day:28,theme:"Week 4 Reflection",prompt:"Journal: What version of yourself started this challenge? Who are you now? What specific moment over these 28 days stands out the most?",micro:"Write one letter of appreciation — to yourself, for doing this work."},
+  {day:29,theme:"The Legacy Question",prompt:"Reflect: When people remember you, what do you want them to feel? Are your daily actions aligned with that? Journal: What one change would make your presence feel like a gift to others?",micro:"Do one thing today that future-you would be proud of."},
+  {day:30,theme:"Full Circle",prompt:"Retake the Humility Assessment. Journal: Compare who you were on Day 1 to today. What changed? What still needs work? What will you carry forward? Commit to one habit.",micro:"Share what you've learned with one person who might benefit from it."},
+];
+
+const CATS=["Self-Awareness","Others-Focused","Growth","Presence","Intellectual Humility","Self-Worth","Equality","Resilience","Kindness"];
+let answers={}, quizScore=null, currentDay=null;
+
+// --- SCREEN MANAGEMENT ---
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  window.scrollTo(0,0);
+  renderNav(id);
+}
+
+function renderNav(current){
+  const nl=document.getElementById('nav-links');
+  nl.innerHTML='';
+  if(current==='home') return;
+  const backMap={quiz:'home',results:'home',challenge:'home',journal:'challenge'};
+  const backLabel={quiz:'← Back',results:'← Home',challenge:'← Home',journal:'← All Days'};
+  if(quizScore!==null && current==='challenge'){
+    btn('Results',()=>showScreen('results'),nl);
+  }
+  btn(backLabel[current]||'← Back',()=>showScreen(backMap[current]||'home'),nl);
+}
+
+function btn(label,fn,parent){
+  const b=document.createElement('button');
+  b.className='nav-btn'; b.textContent=label; b.onclick=fn;
+  parent.appendChild(b);
+}
+
+// --- QUIZ ---
+function buildQuiz(){
+  const el=document.getElementById('quiz-questions');
+  el.innerHTML=QUESTIONS.map((q,i)=>`
+    <div class="question" id="q-block-${q.id}">
+      <p class="q-category">${q.cat}</p>
+      <p class="q-text">${i+1}. ${q.text}</p>
+      <div class="scale-row">
+        <span class="scale-label">Disagree</span>
+        <div class="scale-btns">
+          ${[1,2,3,4,5].map(v=>`<button class="scale-btn" onclick="setAnswer(${q.id},${v},this)">${v}</button>`).join('')}
+        </div>
+        <span class="scale-label">Agree</span>
+      </div>
+    </div>`).join('');
+}
+
+function setAnswer(qId,val,btn){
+  answers[qId]=val;
+  document.querySelectorAll(`#q-block-${qId} .scale-btn`).forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const done=Object.keys(answers).length;
+  const pct=Math.round((done/15)*100);
+  document.getElementById('quiz-progress').style.width=pct+'%';
+  if(done===15){
+    const sb=document.getElementById('submit-btn');
+    sb.style.opacity='1'; sb.style.pointerEvents='auto';
+    document.getElementById('quiz-hint').style.display='none';
+  } else {
+    document.getElementById('quiz-hint').textContent=`Answer all ${15-done} remaining questions`;
+  }
+}
+
+function submitQuiz(){
+  let total=0;
+  QUESTIONS.forEach(q=>{const v=answers[q.id]||3; total+=q.rev?(6-v):v;});
+  quizScore=total;
+  renderResults();
+  showScreen('results');
+}
+
+// --- RESULTS ---
+function renderResults(){
+  const lv=LEVELS.find(l=>quizScore>=l.min&&quizScore<=l.max)||LEVELS[0];
+  document.getElementById('res-score').textContent=quizScore;
+  document.getElementById('res-score').style.color=lv.color;
+  document.getElementById('res-label').textContent=lv.label;
+  document.getElementById('res-label').style.color=lv.color;
+  document.getElementById('res-desc').textContent=lv.desc;
+  document.getElementById('home-score-tag').textContent=`Your score: ${quizScore}/75 →`;
+  document.getElementById('home-score-tag').style.display='block';
+
+  const bd=document.getElementById('breakdown');
+  bd.innerHTML=CATS.map(cat=>{
+    const qs=QUESTIONS.filter(q=>q.cat===cat);
+    const sc=qs.reduce((s,q)=>{const v=answers[q.id]||3;return s+(q.rev?(6-v):v);},0);
+    const mx=qs.length*5, pct=Math.round((sc/mx)*100);
+    const col=pct>=70?'#6aab8e':pct>=50?'#c4a96b':'#e07b54';
+    return `<div class="cat-row">
+      <div class="cat-header"><span class="cat-name">${cat}</span><span class="cat-score">${sc}/${mx}</span></div>
+      <div class="cat-bar"><div class="cat-fill" style="width:${pct}%;background:${col}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+// --- CHALLENGE ---
+function buildChallenge(){
+  // Grid
+  const grid=document.getElementById('day-grid');
+  grid.innerHTML=DAYS.map(d=>`
+    <div class="day-cell" title="Day ${d.day}: ${d.theme}" onclick="openDay(${d.day-1})">${d.day}</div>
+  `).join('');
+
+  // Lists
+  const first=document.getElementById('day-list-first');
+  const rest=document.getElementById('day-list-rest');
+  first.innerHTML=DAYS.slice(0,7).map(d=>dayItem(d)).join('');
+  rest.innerHTML=DAYS.slice(7).map(d=>dayItem(d)).join('');
+}
+
+function dayItem(d){
+  const preview=d.prompt.split('.')[0]+'.';
+  return `<div class="day-item" onclick="openDay(${d.day-1})">
+    <div>
+      <div class="day-item-num">Day ${d.day}</div>
+      <div class="day-item-theme">${d.theme}</div>
+      <div class="day-item-preview">${preview}</div>
+    </div>
+    <span class="arrow">→</span>
+  </div>`;
+}
+
+function toggleMore(){
+  const m=document.getElementById('more-days');
+  const b=document.getElementById('show-more-btn');
+  const open=m.style.display==='block';
+  m.style.display=open?'none':'block';
+  b.textContent=open?'Show All 30 Days':'Show Less';
+}
+
+// --- JOURNAL ---
+function openDay(idx){
+  const d=DAYS[idx];
+  currentDay=idx;
+  document.getElementById('journal-detail').innerHTML=`
+    <p class="day-num">Day ${d.day} · ${d.theme}</p>
+    <h2 class="day-theme">${d.theme}</h2>
+    <p class="prompt-text">${d.prompt}</p>
+    <p class="micro-label">Today's Micro-Practice</p>
+    <p class="micro-text">${d.micro}</p>
+  `;
+  document.getElementById('journal-entry-title').textContent=`"Day ${d.day} — ${d.theme}"`;
+
+  const nav=document.getElementById('day-nav');
+  nav.innerHTML='';
+  if(idx>0){
+    const pb=document.createElement('button');
+    pb.className='btn-ghost'; pb.textContent=`← Day ${d.day-1}`;
+    pb.onclick=()=>openDay(idx-1); nav.appendChild(pb);
+  } else { nav.appendChild(document.createElement('span')); }
+  if(idx<29){
+    const nb=document.createElement('button');
+    nb.className='btn-ghost'; nb.textContent=`Day ${d.day+1} →`;
+    nb.onclick=()=>openDay(idx+1); nav.appendChild(nb);
+  }
+  showScreen('journal');
+}
+
+// --- INIT ---
+buildQuiz();
+buildChallenge();
+renderNav('home');
+</script>
+</body>
+</html>
