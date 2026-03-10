@@ -49,3 +49,4 @@ Free and open source for personal, educational, and non-commercial use.
 ---
 
 *"Humility is not thinking less of yourself, but thinking of yourself less."* — C.S. Lewis
+# how-is-market
